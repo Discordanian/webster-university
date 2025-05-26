@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gorlok Virtual Card Table</title>
+    <!-- CSS -->
+    <link href="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.10/themes/blitzer/jquery-ui.css" rel="stylesheet" type="text/css" /> 
+    <link href="css/app.css" rel="stylesheet" type="text/css" />
+    <!-- Vendor Javascript -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script> 
+    <!-- Local Javascript -->
+    <script src="js/Card.js"></script>
+    <script src="js/Hand.js"></script>
+    <script src="js/Deck.js"></script>
+    <script src="js/PlayerEntity.js"></script>
+    <script src="js/Player.js"></script>
+    <script src="js/Community.js"></script>
+    <script src="js/GameManager.js"></script>
+    <script src="js/Table.js"></script>
+    <script src="js/app.js"></script>
+</head>
+<body>
+<div id="title"></div>
+<div id="main">
+    <div id="menu">
+    <button id="resetTable">Reset Table</button>
+    <fieldset style="display: inline-block;">
+    <legend  for="manageDeck" id="deckChoiceLabel">Choose Deck Style</legend>
+    <div id="manageDeck">
+        <input type="radio" id="deckWithJokers" name="deckType">
+        <label for="deckWithJokers">54 Card Deck</label>
+        <input type="radio" id="removeJokers" name="deckType">
+        <label for="removeJokers">52 Card Deck</label>
+        <input type="radio" id="euchreDeck" name="deckType">
+        <label for="euchreDeck">Euchre Deck</label>
+    </div>
+    </fieldset>
+    <fieldset style="display: inline-block;">
+    <legend  for="managePlayers" id="managePlayersLabel">Set # Of Players</legend>
+    <div id="managePlayers">
+        <input type="radio" id="1player" name="numPlayers">
+        <label for="1player">1</label>
+        <input type="radio" id="2player" name="numPlayers">
+        <label for="2player">2</label>
+        <input type="radio" id="3player" name="numPlayers">
+        <label for="3player">3</label>
+        <input type="radio" id="4player" name="numPlayers">
+        <label for="4player">4</label>
+    </div>
+    </fieldset>
+    </div>
+    <div style="border:thin solid black;padding:4px" id="score">
+    <legend for="gameManger" id="gameManagerLabel">Scores</legend>
+    <fieldset id="gameManager" >
+       <div id="player1gm" style="padding:4px;display:inline-block;border:thin solid red;">
+            <input disabled=disabled value="Player 1" size=20 type="text" name="player1gmName" id="player1gmName" />
+            <input value="0" size=4 type="text" name="player1gmScore" id="player1gmScore" />
+       </div>
+       <div id="player2gm" style="padding:4px;display:inline-block;border:thin solid red;">
+            <input disabled=disabled value="Player 2" size=20 type="text" name="player2gmName" id="player2gmName" />
+            <input value="0" size=4 type="text" name="player2gmScore" id="player2gmScore" />
+       </div>
+       <div id="player3gm" style="padding:4px;display:inline-block;border:thin solid red;">
+            <input disabled=disabled value="Player 3" size=20 type="text" name="player3gmName" id="player3gmName" />
+            <input value="0" size=4 type="text" name="player3gmScore" id="player3gmScore" />
+       </div>
+       <div id="player4gm" style="padding:4px;display:inline-block;border:thin solid red;">
+            <input disabled=disabled value="Player 4" size=20 type="text" name="player4gmName" id="player4gmName" />
+            <input value="0" size=4 type="text" name="player4gmScore" id="player4gmScore" />
+       </div>
+    </fieldset>
+    </div>
+    <div style="border:thin solid blue;padding:4px" id="deck">
+    <fieldset style="display: inline-block;">
+        <legend for="deckCount" id="deckCountLabel">Cards Remaining: 54</legend>
+        <div id="deckCount">
+            <img id="deckStack" src="img/b1fv.png" />
+        </div >
+    </fieldset>
+    <button id="shuffleDeck">Shuffle Deck</button>
+    <button id="resetDeck">Reset Deck</button>
+    <button id="discardCard">Discard</button>
+    </div>
+    <div style="border:thin solid red;padding:4px" id="community">
+    <fieldset style="display: inline-block;">
+        <legend for="communityDiscard" id="communityDiscardLabel">Community Discard: 0</legend>
+        <div id="communityDiscard">
+            <img id="communityDiscardImage" src="img/blank.png"  />
+        </div >
+    </fieldset>
+    <fieldset style="display: inline-block;">
+        <legend for="communityHand" id="communityHandLabel">Community Hand: 0</legend>
+        <div id="communityHand">
+            <img id="communityHandImage" src="img/blank.png"  />
+        </div >
+    </fieldset>
+       
+    </div>
+    <div style="border:thin solid green;padding:4px" id="players"><b>Players</b>
+        <div style="border:thin solid green;padding:2px" id="player1">
+            <input value="Player 1" size=20 type="text" name="player1Name" id="player1Name" />
+            <input value="Email 1" size=20 type="text" name="player1Email" id="player1Email" />
+            <input type="checkbox" name="player1EmailPrefered" id="player1EmailPrefered" />
+            <button id="deal21">Take Card</button>
+            <button id="hide1">Hide Hand</button>
+            <button id="show1">Show Hand</button>
+            <fieldset style="display: inline-block;">
+		<legend>Send First Card To</legend>
+		    <button id="send11">Send to P1</button>
+		    <button id="send12">Send to P2</button>
+		    <button id="send13">Send to P3</button>
+		    <button id="send14">Send to P4</button>
+	    </fieldset>
+            <fieldset>
+                <legend for="player1Hand" id="player1HandLabel">Hand</legend>
+                <div id="player1Hand">
+                </div >
+            </fieldset>
+        </div>
+        <div style="border:thin solid green;padding:2px" id="player2">
+            <input value="Player 2" size=20 type="text" name="player2Name" id="player2Name" />
+            <input value="Email 2" size=20 type="text" name="player2Email" id="player2Email" />
+            <input type="checkbox" name="player2EmailPrefered" id="player2EmailPrefered" />
+            <button id="deal22">Take Card</button>
+            <button id="hide2">Hide Hand</button>
+            <button id="show2">Show Hand</button>
+            <fieldset style="display: inline-block;">
+		<legend>Send First Card To</legend>
+		    <button id="send21">Send to P1</button>
+		    <button id="send22">Send to P2</button>
+		    <button id="send23">Send to P3</button>
+		    <button id="send24">Send to P4</button>
+	    </fieldset>
+            <fieldset>
+	        <legend for="player2Hand" id="player2HandLabel">Hand</legend>
+	        <div id="player2Hand">
+	        </div >
+            </fieldset>
+        </div>
+        <div style="border:thin solid green;padding:2px" id="player3">
+            <input value="Player 3" size=20 type="text" name="player3Name" id="player3Name" />
+            <input value="Email 3" size=20 type="text" name="player3Email" id="player3Email" />
+            <input type="checkbox" name="player3EmailPrefered" id="player3EmailPrefered" />
+            <button id="deal23">Take Card</button>
+            <button id="hide3">Hide Hand</button>
+            <button id="show3">Show Hand</button>
+            <fieldset style="display: inline-block;">
+		<legend>Send First Card To</legend>
+		    <button id="send31">Send to P1</button>
+		    <button id="send32">Send to P2</button>
+		    <button id="send33">Send to P3</button>
+		    <button id="send34">Send to P4</button>
+            </fieldset>
+            <fieldset>
+                <legend for="player3Hand" id="player3HandLabel">Hand</legend>
+                <div id="player3Hand">
+                </div >
+            </fieldset>
+        </div>
+        <div style="border:thin solid green;padding:2px" id="player4">
+            <input value="Player 4" size=20 type="text" name="player4Name" id="player4Name" />
+            <input value="Email 4" size=20 type="text" name="player4Email" id="player4Email" />
+            <input type="checkbox" name="player4EmailPrefered" id="player4EmailPrefered" />
+            <button id="deal24">Take Card</button>
+            <button id="hide4">Hide Hand</button>
+            <button id="show4">Show Hand</button>
+            <fieldset style="display: inline-block;">
+		<legend>Send First Card To</legend>
+		    <button id="send41">Send to P1</button>
+		    <button id="send42">Send to P2</button>
+		    <button id="send43">Send to P3</button>
+		    <button id="send44">Send to P4</button>
+            </fieldset>
+            <fieldset>
+                <legend for="player4Hand" id="player4HandLabel">Hand</legend>
+                <div id="player4Hand">
+                </div >
+            </fieldset>
+        </div>
+    </div>
+</div>
+<div id="footer">
+Written by <a href="http://tangentialcold.com">Kurt Schwind</a>&nbsp;
+[<a target="_blank" href="test/index.html">Test</a>]&nbsp;
+[<a target="_blank" href="https://docs.google.com/spreadsheets/d/1b7n2PZjkIGQ6Id5Duu0sjTT-IGvc99JoYGNC0adG2fo/edit?usp=sharing">Features</a>]&nbsp;
+[<a target="_blank" href="https://docs.google.com/document/d/1Oh7z5kZ6vqKA4zlkj1q_xeGpM2s2K0kT3nseXU3ayvk/edit?usp=sharing">Agile at a Distance</a>]&nbsp;
+[<a target="_blank" href="https://gist.github.com/Discordanian/046cf5f13914cf75d3b7">Refactoring Example</a>]&nbsp;
+[<a href="support/CardTable.vsd">VSD</a>]&nbsp;
+</div>
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-373539-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>
